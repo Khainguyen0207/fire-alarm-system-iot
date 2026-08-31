@@ -8,7 +8,7 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-s
 FROM php:8.4-cli-alpine
 
 RUN apk add --no-cache $PHPIZE_DEPS linux-headers mariadb-connector-c-dev oniguruma-dev supervisor \
-    && docker-php-ext-install pdo_mysql mbstring \
+    && docker-php-ext-install pdo_mysql mbstring pcntl \
     && apk del $PHPIZE_DEPS linux-headers oniguruma-dev
 
 WORKDIR /var/www/html
