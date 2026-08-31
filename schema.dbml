@@ -1,0 +1,85 @@
+Table users {
+  id bigint [pk, increment]
+  name varchar(255) [not null]
+  email varchar(255) [not null, unique]
+  email_verified_at timestamp
+  password varchar(255) [not null]
+  remember_token varchar(100)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table devices {
+  id varchar(100) [pk]
+  name varchar(255) [not null]
+  status varchar(50) [not null, default: 'active']
+  api_key_hash varchar(255) [not null]
+  installed_at timestamp
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    status
+  }
+}
+
+Table sensors {
+  id bigint [pk, increment]
+  device_id varchar(100) [not null]
+  name varchar(255) [not null]
+  type varchar(50) [not null]
+  unit varchar(20)
+  status varchar(50) [not null, default: 'active']
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (device_id, type) [unique]
+  }
+}
+
+Table sensor_measurements {
+  id bigint [pk, increment]
+  sensor_id bigint [not null]
+  value decimal(10, 3) [not null]
+  raw json [not null]
+  recorded_at timestamp [not null]
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (sensor_id, recorded_at)
+  }
+}
+
+Table sensor_measurement_minutes {
+  id bigint [pk, increment]
+  sensor_id bigint [not null]
+  recorded_at timestamp [not null]
+  min_value decimal(10, 3)
+  max_value decimal(10, 3)
+  avg_value decimal(10, 3)
+  detected boolean [not null, default: false]
+  detected_count int [not null, default: 0]
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (sensor_id, recorded_at) [unique]
+  }
+
+  Note: 'Aggregated sensor data: one record per minute.'
+}
+
+Table settings {
+  id bigint [pk, increment]
+  key varchar(255) [not null, unique]
+  value varchar(255) [not null]
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Ref: devices.id < sensors.device_id
+Ref: sensors.id < sensor_measurements.sensor_id
+Ref: sensors.id < sensor_measurement_minutes.sensor_id
