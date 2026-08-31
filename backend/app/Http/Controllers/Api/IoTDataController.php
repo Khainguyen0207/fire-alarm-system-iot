@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\TelemetryReceived;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIoTDataRequest;
 use App\Http\Resources\TelemetryResource;
@@ -26,6 +27,7 @@ class IoTDataController extends Controller
         }
 
         $telemetry = $telemetryIngestionService->ingest($device, $request->validated(), $request->all());
+        TelemetryReceived::dispatch($telemetry);
 
         return response()->json([
             'success' => true,
