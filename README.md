@@ -8,7 +8,7 @@ Laravel backend for a single ESP32 fire monitor. The ESP32 submits telemetry, La
 ./scripts/setup.sh
 ```
 
-The idempotent script builds the `app`, `mysql`, and `reverb` services, then applies and seeds migrations. The API is available at `http://localhost:8000`, MySQL at port `3307`, and Reverb at port `8080`.
+The idempotent script builds the `app`, `mysql`, and `reverb` services, then applies and seeds migrations. Docker Compose bind-mounts the backend source for development, so PHP changes take effect on the next request without rebuilding. The API is available at `http://localhost:8000`, MySQL at port `3307`, and Reverb at port `8080`.
 
 Development credentials:
 
@@ -17,7 +17,7 @@ Development credentials:
 - Device ID: `ESP32_001`
 - Device API key: `development-device-key`
 
-Use `docker compose logs -f app reverb` to observe the application and WebSocket server. Stop the stack with `docker compose down`; add `-v` to reset MySQL data.
+Use `docker compose logs -f app reverb` to observe the application and WebSocket server. Use `docker compose restart reverb` after changing code or configuration used by the long-running Reverb process. After changing `backend/Dockerfile` or Composer dependencies, run `docker compose down -v` and then `docker compose up --build` to recreate the Composer dependency volume. Stop the stack with `docker compose down`; add `-v` to reset MySQL data and the Composer dependency volume.
 
 ## Run Without Docker
 
@@ -43,9 +43,7 @@ cd backend
 php artisan reverb:start --host=0.0.0.0 --port=8080
 ```
 
-Open `http://localhost:8000`, sign in with the development admin credentials, and select device `ESP32_001`. The WebSocket demo authenticates the private channel with the generated Sanctum token and then listens for `telemetry.received` events.
-
-To manually trigger a WebSocket event, send a valid telemetry payload from a third terminal:
+To manually trigger a Reverb event, send a valid telemetry payload from a third terminal:
 
 ```sh
 curl -X POST http://localhost:8000/api/v1/iot/data \
@@ -61,7 +59,7 @@ curl -X POST http://localhost:8000/api/v1/iot/data \
   }'
 ```
 
-When the request returns `201`, the telemetry and event JSON should appear on the demo page without reloading. If the connection fails, make sure Reverb is listening on `ws://localhost:8080` and that the host and port on the page match the local configuration.
+When the request returns `201`, Laravel persists the telemetry and broadcasts `telemetry.received` to the authenticated `devices.ESP32_001` private channel. Make sure Reverb is listening on `ws://localhost:8080` and that the host and port in the WebSocket client match the local configuration.
 
 ## Architecture
 

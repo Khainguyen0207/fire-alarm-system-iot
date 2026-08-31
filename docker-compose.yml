@@ -25,6 +25,9 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    volumes:
+      - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
 
   mysql:
     image: mysql:8.4
@@ -68,6 +71,10 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    volumes:
+      - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
 
 volumes:
   mysql-data:
+  backend-vendor:
