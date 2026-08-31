@@ -1,0 +1,97 @@
+{
+  "version": "2.0.0",
+  "darkMode": true,
+  "gridEnabling": false,
+  "currentViewName": null,
+  "defaultView": {
+    "detailLevel": "All",
+    "tablePositions": [
+      {
+        "name": "users",
+        "schemaName": "public",
+        "x": -420,
+        "y": -180
+      },
+      {
+        "name": "devices",
+        "schemaName": "public",
+        "x": 0,
+        "y": 50
+      },
+      {
+        "name": "sensors",
+        "schemaName": "public",
+        "x": 420,
+        "y": 50
+      },
+      {
+        "name": "sensor_measurements",
+        "schemaName": "public",
+        "x": 840,
+        "y": -125
+      },
+      {
+        "name": "sensor_measurement_minutes",
+        "schemaName": "public",
+        "x": 840,
+        "y": 350
+      },
+      {
+        "name": "settings",
+        "schemaName": "public",
+        "x": 0,
+        "y": 400
+      }
+    ],
+    "tableGroupCollapseStates": [],
+    "stickyNoteLayouts": [],
+    "referencePaths": [
+      {
+        "firstFieldNames": [
+          "id"
+        ],
+        "firstTableName": "devices",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "device_id"
+        ],
+        "secondTableName": "sensors",
+        "secondSchemaName": "public",
+        "secondRelation": "*",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id"
+        ],
+        "firstTableName": "sensors",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "sensor_id"
+        ],
+        "secondTableName": "sensor_measurements",
+        "secondSchemaName": "public",
+        "secondRelation": "*",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id"
+        ],
+        "firstTableName": "sensors",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "sensor_id"
+        ],
+        "secondTableName": "sensor_measurement_minutes",
+        "secondSchemaName": "public",
+        "secondRelation": "*",
+        "checkPoints": []
+      }
+    ]
+  },
+  "views": {}
+}
