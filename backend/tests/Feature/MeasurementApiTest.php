@@ -23,7 +23,7 @@ class MeasurementApiTest extends TestCase
 
         $this->storeTelemetry($recordedAt, 56, 65, 151, true);
 
-        $this->getJson('/api/devices/ESP32_001/measurements/latest')
+        $this->getJson('/api/v1/devices/ESP32_001/measurements/latest')
             ->assertOk()
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.recordedAt', '2026-08-31T10:30:00+07:00')
@@ -50,14 +50,14 @@ class MeasurementApiTest extends TestCase
             'detected_count' => 0,
         ]);
 
-        $this->getJson('/api/devices/ESP32_001/measurements?sensorType=temperature')
+        $this->getJson('/api/v1/devices/ESP32_001/measurements?sensorType=temperature')
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.sensorType', 'temperature')
             ->assertJsonPath('data.0.raw.deviceId', 'ESP32_001')
             ->assertJsonPath('meta.total', 1);
 
-        $this->getJson('/api/devices/ESP32_001/measurements/minutes?sensorType=temperature')
+        $this->getJson('/api/v1/devices/ESP32_001/measurements/minutes?sensorType=temperature')
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.avg', 25)
