@@ -1,0 +1,73 @@
+services:
+  app:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: base64:rA4cQbkP6VzdZEvwXTj5AvMPWiaR3fwvcmriIPOFzDE=
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: fire_alarm
+      DB_USERNAME: fire_alarm
+      DB_PASSWORD: fire_alarm
+      BROADCAST_CONNECTION: reverb
+      REVERB_APP_ID: local-reverb-app
+      REVERB_APP_KEY: local-reverb-key
+      REVERB_APP_SECRET: local-reverb-secret
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.4
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: fire_alarm
+      MYSQL_USER: fire_alarm
+      MYSQL_PASSWORD: fire_alarm
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  reverb:
+    build:
+      context: ./backend
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: base64:rA4cQbkP6VzdZEvwXTj5AvMPWiaR3fwvcmriIPOFzDE=
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: fire_alarm
+      DB_USERNAME: fire_alarm
+      DB_PASSWORD: fire_alarm
+      REVERB_APP_ID: local-reverb-app
+      REVERB_APP_KEY: local-reverb-key
+      REVERB_APP_SECRET: local-reverb-secret
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql-data:
