@@ -1,1 +1,2 @@
 /scripts/setup-local.sh
+/backend/resources/views/welcome.blade.php
