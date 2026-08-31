@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Models\Sensor;
 use App\Models\SensorMeasurement;
 use App\Models\SensorMeasurementMinute;
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class MeasurementApiTest extends TestCase
@@ -16,6 +18,7 @@ class MeasurementApiTest extends TestCase
     public function test_it_returns_the_latest_complete_telemetry_with_the_authoritative_state(): void
     {
         $this->seed();
+        Sanctum::actingAs(User::query()->firstOrFail());
         $recordedAt = CarbonImmutable::parse('2026-08-31T03:30:00Z');
 
         $this->storeTelemetry($recordedAt, 56, 65, 151, true);
@@ -31,6 +34,7 @@ class MeasurementApiTest extends TestCase
     public function test_it_lists_raw_and_minute_measurements_with_filters(): void
     {
         $this->seed();
+        Sanctum::actingAs(User::query()->firstOrFail());
         $recordedAt = CarbonImmutable::parse('2026-08-31T03:30:00Z');
         $sensors = $this->sensors();
 
