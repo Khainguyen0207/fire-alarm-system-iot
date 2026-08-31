@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - 'backend/**'
+      - 'schema.dbml'
+      - 'schema.dbdiagram'
+      - '.dbdiagram/**'
       - '.github/workflows/backend-tests.yml'
   push:
     branches:
