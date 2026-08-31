@@ -8,7 +8,7 @@ Laravel backend for a single ESP32 fire monitor. The ESP32 submits telemetry, La
 ./scripts/setup.sh
 ```
 
-The idempotent script builds the `app`, `mysql`, and `reverb` services, generates an application key, and applies/seeds migrations. The API is then available at `http://localhost:8000` and Reverb at port `8080`.
+The idempotent script builds the `app`, `mysql`, and `reverb` services, then applies and seeds migrations. The API is available at `http://localhost:8000`, MySQL at port `3307`, and Reverb at port `8080`.
 
 Development credentials:
 
