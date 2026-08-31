@@ -23,7 +23,7 @@ class IoTDataIngestionTest extends TestCase
         ]);
 
         $response = $this->withHeader('X-Device-Key', 'development-device-key')
-            ->postJson('/api/iot/data', $payload);
+            ->postJson('/api/v1/iot/data', $payload);
 
         $response
             ->assertCreated()
@@ -47,7 +47,7 @@ class IoTDataIngestionTest extends TestCase
         $this->seed();
 
         $response = $this->withHeader('X-Device-Key', 'development-device-key')
-            ->postJson('/api/iot/data', $this->payload([
+            ->postJson('/api/v1/iot/data', $this->payload([
                 'temperature' => 42,
                 'smokePpm' => 10,
                 'flameDetected' => false,
@@ -61,7 +61,7 @@ class IoTDataIngestionTest extends TestCase
         $this->seed();
 
         $response = $this->withHeader('X-Device-Key', 'development-device-key')
-            ->postJson('/api/iot/data', $this->payload());
+            ->postJson('/api/v1/iot/data', $this->payload());
 
         $response->assertCreated()->assertJsonPath('data.state', 'NORMAL');
     }
@@ -70,7 +70,7 @@ class IoTDataIngestionTest extends TestCase
     {
         $this->seed();
 
-        $response = $this->postJson('/api/iot/data', $this->payload());
+        $response = $this->postJson('/api/v1/iot/data', $this->payload());
 
         $response
             ->assertUnauthorized()
@@ -83,7 +83,7 @@ class IoTDataIngestionTest extends TestCase
         $this->seed();
 
         $response = $this->withHeader('X-Device-Key', 'development-device-key')
-            ->postJson('/api/iot/data', $this->payload(['humidity' => 101]));
+            ->postJson('/api/v1/iot/data', $this->payload(['humidity' => 101]));
 
         $response
             ->assertUnprocessable()

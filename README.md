@@ -19,9 +19,53 @@ Development credentials:
 
 Use `docker compose logs -f app reverb` to observe the application and WebSocket server. Stop the stack with `docker compose down`; add `-v` to reset MySQL data.
 
+## Run Without Docker
+
+Configure MySQL and Reverb values in `backend/.env`, then install dependencies and apply the seeded database:
+
+```sh
+cd backend
+composer install
+npm install --ignore-scripts
+php artisan migrate --seed
+npm run build
+```
+
+Run Laravel and Reverb in separate terminals:
+
+```sh
+cd backend
+php artisan serve
+```
+
+```sh
+cd backend
+php artisan reverb:start --host=0.0.0.0 --port=8080
+```
+
+Open `http://localhost:8000`, sign in with the development admin credentials, and select device `ESP32_001`. The WebSocket demo authenticates the private channel with the generated Sanctum token and then listens for `telemetry.received` events.
+
+To manually trigger a WebSocket event, send a valid telemetry payload from a third terminal:
+
+```sh
+curl -X POST http://localhost:8000/api/v1/iot/data \
+  -H "Content-Type: application/json" \
+  -H "X-Device-Key: development-device-key" \
+  -d '{
+    "deviceId": "ESP32_001",
+    "recordedAt": "2026-08-31T10:00:00+07:00",
+    "temperature": 65,
+    "humidity": 52,
+    "smokePpm": 410,
+    "flameDetected": true
+  }'
+```
+
+When the request returns `201`, the telemetry and event JSON should appear on the demo page without reloading. If the connection fails, make sure Reverb is listening on `ws://localhost:8080` and that the host and port on the page match the local configuration.
+
 ## Architecture
 
-`ESP32 -> POST /api/iot/data -> Laravel services -> MySQL -> Reverb private channel -> frontend`
+`ESP32 -> POST /api/v1/iot/data -> Laravel services -> MySQL -> Reverb private channel -> frontend`
 
 The backend, not the ESP32, decides the fire state:
 
@@ -37,17 +81,17 @@ All responses use `success`, `data`, `message`, and `errors`. Admin endpoints re
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| POST | `/api/auth/login` | Obtain a Sanctum token |
-| POST | `/api/auth/logout` | Revoke the active token |
-| POST | `/api/iot/data` | Ingest ESP32 telemetry using `X-Device-Key` |
-| GET/POST | `/api/devices` | List or create devices |
-| GET/PATCH/DELETE | `/api/devices/{device}` | Manage a device |
-| GET/POST | `/api/devices/{device}/sensors` | List or create device sensors |
-| PATCH/DELETE | `/api/sensors/{sensor}` | Manage a sensor |
-| GET | `/api/devices/{device}/measurements/latest` | Latest combined telemetry |
-| GET | `/api/devices/{device}/measurements` | Raw history; filters: `from`, `to`, `sensorType`, `perPage` |
-| GET | `/api/devices/{device}/measurements/minutes` | Minute history; same filters |
-| GET/PATCH | `/api/settings`, `/api/settings/{setting}` | Read thresholds; only values can change |
+| POST | `/api/v1/auth/login` | Obtain a Sanctum token |
+| POST | `/api/v1/auth/logout` | Revoke the active token |
+| POST | `/api/v1/iot/data` | Ingest ESP32 telemetry using `X-Device-Key` |
+| GET/POST | `/api/v1/devices` | List or create devices |
+| GET/PATCH/DELETE | `/api/v1/devices/{device}` | Manage a device |
+| GET/POST | `/api/v1/devices/{device}/sensors` | List or create device sensors |
+| PATCH/DELETE | `/api/v1/sensors/{sensor}` | Manage a sensor |
+| GET | `/api/v1/devices/{device}/measurements/latest` | Latest combined telemetry |
+| GET | `/api/v1/devices/{device}/measurements` | Raw history; filters: `from`, `to`, `sensorType`, `perPage` |
+| GET | `/api/v1/devices/{device}/measurements/minutes` | Minute history; same filters |
+| GET/PATCH | `/api/v1/settings`, `/api/v1/settings/{setting}` | Read thresholds; only values can change |
 
 Reverb emits `telemetry.received` on the private `devices.{deviceId}` channel. Every authenticated user is authorized for every device channel.
 
@@ -60,5 +104,3 @@ cd backend
 php artisan test --compact
 vendor/bin/pint --dirty --format agent
 ```
-
-To run without Docker, configure MySQL and Reverb values in `backend/.env`, run `php artisan migrate --seed`, then run `php artisan serve`, `php artisan schedule:work`, and `php artisan reverb:start` in separate terminals.
