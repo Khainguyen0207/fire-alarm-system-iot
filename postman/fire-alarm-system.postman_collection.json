@@ -1,0 +1,53 @@
+{
+  "info": {
+    "name": "Fire Alarm System IoT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8000/api"},
+    {"key": "token", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}"},
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/auth/logout"}
+        }
+      ]
+    },
+    {
+      "name": "IoT",
+      "item": [
+        {
+          "name": "Ingest telemetry",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "X-Device-Key", "value": "development-device-key"}],
+            "body": {"mode": "raw", "raw": "{\n  \"deviceId\": \"ESP32_001\",\n  \"recordedAt\": \"2026-08-31T10:30:00+07:00\",\n  \"temperature\": 28.5,\n  \"humidity\": 65,\n  \"smokePpm\": 12.75,\n  \"flameDetected\": false,\n  \"fan\": false,\n  \"pump\": false,\n  \"buzzer\": false\n}"},
+            "url": "{{baseUrl}}/iot/data"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {"name": "Devices", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices"}},
+        {"name": "Latest telemetry", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices/ESP32_001/measurements/latest"}},
+        {"name": "Minute history", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices/ESP32_001/measurements/minutes?sensorType=temperature"}},
+        {"name": "Settings", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/settings"}}
+      ]
+    }
+  ]
+}
