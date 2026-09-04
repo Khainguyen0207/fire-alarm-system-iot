@@ -12,6 +12,7 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
+        Setting::query()->delete();
         foreach ([
             ['key' => 'temperature_warning', 'value' => '40', 'description' => 'Temperature warning threshold in °C.'],
             ['key' => 'temperature_danger', 'value' => '55', 'description' => 'Temperature danger threshold in °C.'],
