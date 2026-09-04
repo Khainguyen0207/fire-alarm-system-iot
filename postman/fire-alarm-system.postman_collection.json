@@ -5,7 +5,10 @@
   },
   "variable": [
     {"key": "baseUrl", "value": "http://localhost:8000/api/v1"},
-    {"key": "token", "value": ""}
+    {"key": "token", "value": ""},
+    {"key": "deviceId", "value": "ESP32_002"},
+    {"key": "sensorId", "value": "1"},
+    {"key": "settingId", "value": "1"}
   ],
   "item": [
     {
@@ -44,9 +47,18 @@
       "name": "Admin",
       "item": [
         {"name": "Devices", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices"}},
+        {"name": "Create device", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"id\": \"{{deviceId}}\",\n  \"name\": \"Garage Monitor\",\n  \"status\": \"active\",\n  \"apiKey\": \"a-secure-device-key\",\n  \"installedAt\": \"2026-09-04T10:00:00+07:00\"\n}"}, "url": "{{baseUrl}}/devices"}},
+        {"name": "Device details", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices/{{deviceId}}"}},
+        {"name": "Update device", "request": {"method": "PATCH", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"name\": \"Garage Monitor Updated\",\n  \"status\": \"inactive\"\n}"}, "url": "{{baseUrl}}/devices/{{deviceId}}"}},
+        {"name": "Delete device", "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices/{{deviceId}}"}},
+        {"name": "Sensors", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices/{{deviceId}}/sensors"}},
+        {"name": "Create sensor", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"name\": \"Garage Temperature\",\n  \"type\": \"temperature\",\n  \"unit\": \"C\",\n  \"status\": \"active\"\n}"}, "url": "{{baseUrl}}/devices/{{deviceId}}/sensors"}},
+        {"name": "Update sensor", "request": {"method": "PATCH", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"status\": \"inactive\"\n}"}, "url": "{{baseUrl}}/sensors/{{sensorId}}"}},
+        {"name": "Delete sensor", "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/sensors/{{sensorId}}"}},
         {"name": "Latest telemetry", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices/ESP32_001/measurements/latest"}},
         {"name": "Minute history", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/devices/ESP32_001/measurements/minutes?sensorType=temperature"}},
-        {"name": "Settings", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/settings"}}
+        {"name": "Settings", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{baseUrl}}/settings"}},
+        {"name": "Update setting", "request": {"method": "PATCH", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}, {"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"value\": \"41\"\n}"}, "url": "{{baseUrl}}/settings/{{settingId}}"}}
       ]
     }
   ]

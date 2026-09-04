@@ -12,6 +12,7 @@ class SensorSeeder extends Seeder
      */
     public function run(): void
     {
+        Sensor::query()->delete();
         foreach ([
             ['name' => 'Temperature Sensor', 'type' => 'temperature', 'unit' => '°C'],
             ['name' => 'Humidity Sensor', 'type' => 'humidity', 'unit' => '%'],

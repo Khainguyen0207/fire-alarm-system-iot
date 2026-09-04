@@ -13,6 +13,7 @@ class DeviceSeeder extends Seeder
      */
     public function run(): void
     {
+        Device::query()->delete();
         Device::query()->firstOrCreate(
             ['id' => 'ESP32_001'],
             [

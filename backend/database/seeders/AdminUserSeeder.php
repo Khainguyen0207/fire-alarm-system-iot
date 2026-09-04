@@ -12,6 +12,8 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        User::query()->delete();
+
         User::query()->firstOrCreate(
             ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
             [

@@ -22,6 +22,7 @@ services:
       REVERB_HOST: reverb
       REVERB_PORT: 8080
       REVERB_SCHEME: http
+      IOT_DEVICE_KEY: fire-alarm-device-key
     depends_on:
       mysql:
         condition: service_healthy
