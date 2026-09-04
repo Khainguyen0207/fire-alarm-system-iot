@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/docs');
 });
 
 Route::view('/docs', 'docs');
+Route::view('/demo', 'welcome');
